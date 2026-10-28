@@ -60,6 +60,28 @@
 </main>
 
 <script>
+ function scanUrl(url) {
+  const u = url.toLowerCase();
+  
+  // 1. @ Trick - Sabse khatarnak
+  if (u.includes("@")) {
+    return { status: "Dangerous", riskScore: 90, threat: "Contains @ - Redirection Trick" };
+  }
+  // 2. IP Address
+  if (/\d+\.\d+\.\d+\.\d+/.test(u)) {
+    return { status: "Critical", riskScore: 95, threat: "IP Address URL" };
+  }
+  // 3. Suspicious TLD + Brand
+  if (u.includes(".tk") || u.includes(".ml") || u.includes(".xyz")) {
+    return { status: "Dangerous", riskScore: 85, threat: "Fake TLD" };
+  }
+  // 4. Too many dots/hyphens + keywords
+  if ((u.match(/-/g) || []).length >= 3 || (u.match(/\./g) || []).length >= 4) {
+    return { status: "Suspicious", riskScore: 75, threat: "Suspicious Pattern" };
+  }
+
+  return { status: "Safe", riskScore: 10, threat: "Clean" };
+ }
 function setAndScan(v){document.getElementById('urlInput').value=v; scan();}
 
 function scan(){
